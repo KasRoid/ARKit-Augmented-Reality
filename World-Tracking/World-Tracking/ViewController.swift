@@ -13,7 +13,8 @@ class ViewController: UIViewController {
     // MARK: - Properties
     private let sceneView = ARSCNView()
     private let configuration = ARWorldTrackingConfiguration()
-    private let button = UIButton(type: .system)
+    private let addButton = UIButton(type: .system)
+    private let removeButton = UIButton(type: .system)
 
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -24,18 +25,30 @@ class ViewController: UIViewController {
     
     // MARK: - Selectors
     @objc
-    private func handleButton(_ sender: UIButton) {
-        let node = SCNNode()
-        node.geometry = SCNBox(width: 0.1, height: 0.1, length: 0.1, chamferRadius: 0)
-        node.geometry?.firstMaterial?.diffuse.contents = UIColor.yellow
-        node.position = SCNVector3(0.2, 0.2, -0.2)
-        sceneView.scene.rootNode.addChildNode(node)
+    private func handleButtons(_ sender: UIButton) {
+        switch sender {
+        case addButton:
+            let node = SCNNode()
+            node.geometry = SCNBox(width: 0.1, height: 0.1, length: 0.1, chamferRadius: 0)
+            node.geometry?.firstMaterial?.diffuse.contents = UIColor.yellow
+            node.position = SCNVector3(0, 0, -0.3)
+            sceneView.scene.rootNode.addChildNode(node)
+        case removeButton:
+            sceneView.session.pause()
+            sceneView.scene.rootNode.enumerateChildNodes { (node, _) in
+                node.removeFromParentNode()
+            }
+            sceneView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
+        default:
+            break
+        }
+        
     }
 }
 
 extension ViewController {
     private func setupSceneView() {
-        sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints, ARSCNDebugOptions.showWorldOrigin]
+//        sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints, ARSCNDebugOptions.showWorldOrigin]
         sceneView.session.run(configuration)
     }
     
@@ -49,13 +62,21 @@ extension ViewController {
             sceneView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
         
-        button.setTitle("Button", for: .normal)
-        button.addTarget(self, action: #selector(handleButton(_:)), for: .touchUpInside)
-        view.addSubview(button)
-        button.translatesAutoresizingMaskIntoConstraints = false
+        addButton.setTitle("Add", for: .normal)
+        addButton.addTarget(self, action: #selector(handleButtons(_:)), for: .touchUpInside)
+        view.addSubview(addButton)
+        addButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            button.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
-            button.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30),
+            addButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            addButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30),
+        ])
+        removeButton.setTitle("Remove", for: .normal)
+        removeButton.addTarget(self, action: #selector(handleButtons(_:)), for: .touchUpInside)
+        view.addSubview(removeButton)
+        removeButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            removeButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+            removeButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30),
         ])
     }
 }
