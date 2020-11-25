@@ -29,9 +29,13 @@ class ViewController: UIViewController {
         switch sender {
         case addButton:
             let node = SCNNode()
-            node.geometry = SCNBox(width: 0.1, height: 0.1, length: 0.1, chamferRadius: 0)
+            node.geometry = SCNBox(width: 0.1, height: 0.1, length: 0.1, chamferRadius: 0.03)
+            node.geometry?.firstMaterial?.specular.contents = UIColor.white
             node.geometry?.firstMaterial?.diffuse.contents = UIColor.yellow
-            node.position = SCNVector3(0, 0, -0.3)
+            let x = randomNumbers(firstNum: -0.3, secondNum: 0.3)
+            let y = randomNumbers(firstNum: -0.3, secondNum: 0.3)
+            let z = randomNumbers(firstNum: -0.3, secondNum: -0.6)
+            node.position = SCNVector3(x, y, z)
             sceneView.scene.rootNode.addChildNode(node)
         case removeButton:
             sceneView.session.pause()
@@ -42,13 +46,18 @@ class ViewController: UIViewController {
         default:
             break
         }
-        
+    }
+    
+    // MARK: - Helpers
+    private func randomNumbers(firstNum: CGFloat, secondNum: CGFloat) -> CGFloat {
+        return CGFloat(arc4random()) / CGFloat(UINT32_MAX) * abs(firstNum - secondNum) + min(firstNum, secondNum)
     }
 }
 
 extension ViewController {
     private func setupSceneView() {
 //        sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints, ARSCNDebugOptions.showWorldOrigin]
+        sceneView.autoenablesDefaultLighting = true
         sceneView.session.run(configuration)
     }
     
