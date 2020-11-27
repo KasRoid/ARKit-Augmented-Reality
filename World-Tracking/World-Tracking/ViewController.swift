@@ -28,28 +28,9 @@ class ViewController: UIViewController {
     private func handleButtons(_ sender: UIButton) {
         switch sender {
         case addButton:
-            let node = SCNNode()
-            
-            let path = UIBezierPath()
-            path.move(to: CGPoint(x: 0, y: 0))
-            path.addLine(to: CGPoint(x: 0, y: 0.2))
-            path.addLine(to: CGPoint(x: 0.2, y: 0.4))
-            path.addLine(to: CGPoint(x: 0.4, y: 0.2))
-            path.addLine(to: CGPoint(x: 0.4, y: 0))
-            
-            node.geometry = SCNShape(path: path, extrusionDepth: 0.1)
-            node.geometry?.firstMaterial?.specular.contents = UIColor.white
-            node.geometry?.firstMaterial?.diffuse.contents = UIColor.yellow
-            node.position = SCNVector3(0, 0, -0.3)
-            sceneView.scene.rootNode.addChildNode(node)
-            
+            addButtonActions()
         case removeButton:
-            sceneView.session.pause()
-            sceneView.scene.rootNode.enumerateChildNodes { (node, _) in
-                node.removeFromParentNode()
-            }
-            sceneView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
-            
+            removeButtonActions()
         default:
             break
         }
@@ -66,6 +47,49 @@ extension ViewController {
 //        sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints, ARSCNDebugOptions.showWorldOrigin]
         sceneView.autoenablesDefaultLighting = true
         sceneView.session.run(configuration)
+    }
+    
+    private func addButtonActions() {
+        buildHouse()
+    }
+    
+    private func removeButtonActions() {
+        sceneView.session.pause()
+        sceneView.scene.rootNode.enumerateChildNodes { (node, _) in
+            node.removeFromParentNode()
+        }
+        sceneView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
+    }
+    
+    private func buildHouse() {
+        let houseGeometry = SCNBox(width: 0.1, height: 0.1, length: 0.1, chamferRadius: 0)
+        let ceilingGeometry = SCNPyramid(width: 0.1, height: 0.1, length: 0.1)
+        let doorGeometry = SCNPlane(width: 0.05, height: 0.05)
+        let houseNode = SCNNode(geometry: houseGeometry)
+        let ceilingNode = SCNNode(geometry: ceilingGeometry)
+        let doorNode = SCNNode(geometry: doorGeometry)
+        
+        houseNode.geometry?.firstMaterial?.diffuse.contents = UIColor.white
+        houseNode.position = SCNVector3(0, 0, -0.3)
+        sceneView.scene.rootNode.addChildNode(houseNode)
+        houseNode.addChildNode(ceilingNode)
+        houseNode.addChildNode(doorNode)
+    }
+    
+    private func createHouseShape() {
+        let node = SCNNode()
+        let path = UIBezierPath()
+        path.move(to: CGPoint(x: 0, y: 0))
+        path.addLine(to: CGPoint(x: 0, y: 0.2))
+        path.addLine(to: CGPoint(x: 0.2, y: 0.4))
+        path.addLine(to: CGPoint(x: 0.4, y: 0.2))
+        path.addLine(to: CGPoint(x: 0.4, y: 0))
+        
+        node.geometry = SCNShape(path: path, extrusionDepth: 0.1)
+        node.geometry?.firstMaterial?.specular.contents = UIColor.white
+        node.geometry?.firstMaterial?.diffuse.contents = UIColor.yellow
+        node.position = SCNVector3(0, 0, -0.3)
+        sceneView.scene.rootNode.addChildNode(node)
     }
     
     private func setupUI() {
