@@ -62,18 +62,27 @@ extension ViewController {
     }
     
     private func buildHouse() {
-        let houseGeometry = SCNBox(width: 0.1, height: 0.1, length: 0.1, chamferRadius: 0)
-        let ceilingGeometry = SCNPyramid(width: 0.1, height: 0.1, length: 0.1)
-        let doorGeometry = SCNPlane(width: 0.05, height: 0.05)
+        let houseGeometry = SCNBox(width: 0.1, height: 0.08, length: 0.1, chamferRadius: 0)
+        let ceilingGeometry = SCNPyramid(width: 0.1, height: 0.05, length: 0.1)
+        let doorGeometry = SCNPlane(width: 0.025, height: 0.05)
+        let handleGeometory = SCNPlane(width: 0.005, height: 0.005)
+        handleGeometory.cornerRadius = 0.01 / 2
         let houseNode = SCNNode(geometry: houseGeometry)
         let ceilingNode = SCNNode(geometry: ceilingGeometry)
         let doorNode = SCNNode(geometry: doorGeometry)
+        let handleNode = SCNNode(geometry: handleGeometory)
         
         houseNode.geometry?.firstMaterial?.diffuse.contents = UIColor.white
         houseNode.position = SCNVector3(0, 0, -0.3)
+        ceilingNode.position = SCNVector3(0, 0.04, 0)
+        doorNode.geometry?.firstMaterial?.diffuse.contents = UIColor.red
+        doorNode.position = SCNVector3(-0.05 + (0.025 / 2) + 0.005, -(0.04 - 0.025), 0.051)
+        handleNode.geometry?.firstMaterial?.diffuse.contents = UIColor.yellow
+        handleNode.position = SCNVector3(-0.008, 0, 0.001)
         sceneView.scene.rootNode.addChildNode(houseNode)
         houseNode.addChildNode(ceilingNode)
         houseNode.addChildNode(doorNode)
+        doorNode.addChildNode(handleNode)
     }
     
     private func createHouseShape() {
