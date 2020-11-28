@@ -25,12 +25,20 @@ class ViewController: UIViewController {
     }
 }
 
+// MARK:
+extension ViewController: ARSCNViewDelegate {
+    func renderer(_ renderer: SCNSceneRenderer, willRenderScene scene: SCNScene, atTime time: TimeInterval) {
+        print("Rendering")
+    }
+}
+
 // MARK: - UI
 extension ViewController {
     func setupAR() {
+        sceneView.delegate = self
+        sceneView.showsStatistics = true
         let configuration = ARWorldTrackingConfiguration()
         sceneView.session.run(configuration)
-        sceneView.showsStatistics = true
     }
     
     func setupUI() {
