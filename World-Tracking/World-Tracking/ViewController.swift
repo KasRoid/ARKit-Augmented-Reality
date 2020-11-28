@@ -42,15 +42,10 @@ class ViewController: UIViewController {
     }
 }
 
+// MARK: - Node Related
 extension ViewController {
-    private func setupSceneView() {
-//        sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints, ARSCNDebugOptions.showWorldOrigin]
-        sceneView.autoenablesDefaultLighting = true
-        sceneView.session.run(configuration)
-    }
-    
     private func addButtonActions() {
-        rotatedPlane()
+        relativeRotation()
     }
     
     private func removeButtonActions() {
@@ -95,6 +90,20 @@ extension ViewController {
         sceneView.scene.rootNode.addChildNode(node)
     }
     
+    private func relativeRotation() {
+        let boxGeometry = SCNBox(width: 0.1, height: 0.1, length: 0.1, chamferRadius: 0)
+        let pyramidGeometry = SCNPyramid(width: 0.1, height: 0.05, length: 0.1)
+        let box = SCNNode(geometry: boxGeometry)
+        let pyramid = SCNNode(geometry: pyramidGeometry)
+        box.position = SCNVector3(0, 0, -0.1)
+        box.geometry?.firstMaterial?.diffuse.contents = UIColor.red
+        box.eulerAngles = SCNVector3(0, 0, 90.degreesToRadians)
+        pyramid.position = SCNVector3(0, 0, -0.2)
+        pyramid.geometry?.firstMaterial?.diffuse.contents = UIColor.green
+        sceneView.scene.rootNode.addChildNode(box)
+        box.addChildNode(pyramid)
+    }
+    
     private func createHouseShape() {
         let node = SCNNode()
         let path = UIBezierPath()
@@ -109,6 +118,15 @@ extension ViewController {
         node.geometry?.firstMaterial?.diffuse.contents = UIColor.yellow
         node.position = SCNVector3(0, 0, -0.3)
         sceneView.scene.rootNode.addChildNode(node)
+    }
+}
+
+// MARK: - UI
+extension ViewController {
+    private func setupSceneView() {
+        sceneView.autoenablesDefaultLighting = true
+        sceneView.session.run(configuration)
+        //        sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints, ARSCNDebugOptions.showWorldOrigin]
     }
     
     private func setupUI() {
@@ -151,6 +169,7 @@ extension ViewController {
 //            node.geometry = SCNPlane(width: 0.2, height: 0.2)
 //            node.geometry = SCNPyramid(width: 0.1, height: 0.1, length: 0.1)
 
+// MARK: - Int Extension
 extension Int {
     var degreesToRadians: Double { return Double(self) * .pi / 180 }
 }
