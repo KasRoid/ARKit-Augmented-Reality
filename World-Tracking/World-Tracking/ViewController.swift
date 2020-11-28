@@ -50,7 +50,7 @@ extension ViewController {
     }
     
     private func addButtonActions() {
-        buildHouse()
+        rotatedPlane()
     }
     
     private func removeButtonActions() {
@@ -83,6 +83,16 @@ extension ViewController {
         houseNode.addChildNode(ceilingNode)
         houseNode.addChildNode(doorNode)
         doorNode.addChildNode(handleNode)
+    }
+    
+    private func rotatedPlane() {
+        let geometry = SCNPlane(width: 0.2, height: 0.2)
+        let node = SCNNode(geometry: geometry)
+        node.geometry?.firstMaterial?.diffuse.contents = UIColor.red
+        node.geometry?.firstMaterial?.isDoubleSided = true
+        node.position = SCNVector3(0, 0, -0.2)
+        node.eulerAngles = SCNVector3(0, 90.degreesToRadians, 0)
+        sceneView.scene.rootNode.addChildNode(node)
     }
     
     private func createHouseShape() {
@@ -140,3 +150,7 @@ extension ViewController {
 //            node.geometry = SCNTorus(ringRadius: 0.2, pipeRadius: 0.1)
 //            node.geometry = SCNPlane(width: 0.2, height: 0.2)
 //            node.geometry = SCNPyramid(width: 0.1, height: 0.1, length: 0.1)
+
+extension Int {
+    var degreesToRadians: Double { return Double(self) * .pi / 180 }
+}
