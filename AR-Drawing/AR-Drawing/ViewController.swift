@@ -12,11 +12,14 @@ class ViewController: UIViewController {
 
     let sceneView = ARSCNView()
     let button = UIButton(type: .system)
+    let someNode = SCNNode(geometry: SCNBox(width: 0.1, height: 0.1, length: 0.1, chamferRadius: 0))
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         setupAR()
+        someNode.geometry?.firstMaterial?.diffuse.contents = UIColor.red
+        sceneView.scene.rootNode.addChildNode(someNode)
     }
     
     @objc
@@ -25,10 +28,19 @@ class ViewController: UIViewController {
     }
 }
 
-// MARK:
+func +(left: SCNVector3, right: SCNVector3) -> SCNVector3 {
+    return SCNVector3Make(left.x + right.x, left.y + right.y, left.z + right.z)
+}
+
+// MARK: - ARSCNViewDelegate
 extension ViewController: ARSCNViewDelegate {
     func renderer(_ renderer: SCNSceneRenderer, willRenderScene scene: SCNScene, atTime time: TimeInterval) {
-        print("Rendering")
+        guard let pointOfView = sceneView.pointOfView else { return } // 카메라 최초실행 시점상 정중앙
+        let transform = pointOfView.transform
+        let orientation = SCNVector3(-transform.m31, -transform.m32, -transform.m33) // 방향
+        let location = SCNVector3(transform.m41, transform.m42, transform.m43) // 위치
+        let currentPositionOfCamera = orientation + location // 위치에 방향값을 더해 카메라의 정확한 위치를 파악
+        someNode.position = currentPositionOfCamera
     }
 }
 
