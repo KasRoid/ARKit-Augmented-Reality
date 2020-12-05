@@ -12,14 +12,11 @@ class ViewController: UIViewController {
 
     let sceneView = ARSCNView()
     let button = UIButton(type: .system)
-    let someNode = SCNNode(geometry: SCNBox(width: 0.1, height: 0.1, length: 0.1, chamferRadius: 0))
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         setupAR()
-        someNode.geometry?.firstMaterial?.diffuse.contents = UIColor.red
-        sceneView.scene.rootNode.addChildNode(someNode)
     }
     
     @objc
@@ -40,7 +37,26 @@ extension ViewController: ARSCNViewDelegate {
         let orientation = SCNVector3(-transform.m31, -transform.m32, -transform.m33) // 방향
         let location = SCNVector3(transform.m41, transform.m42, transform.m43) // 위치
         let currentPositionOfCamera = orientation + location // 위치에 방향값을 더해 카메라의 정확한 위치를 파악
-        someNode.position = currentPositionOfCamera
+        DispatchQueue.main.async {
+            if self.button.isHighlighted {
+                let sphereNode = SCNNode(geometry: SCNSphere(radius: 0.02))
+                sphereNode.position = currentPositionOfCamera
+                self.sceneView.scene.rootNode.addChildNode(sphereNode)
+                sphereNode.geometry?.firstMaterial?.diffuse.contents = UIColor.red
+                print("Draw")
+            } else {
+                let pointer = SCNNode(geometry: SCNSphere(radius: 0.01))
+                pointer.name = "pointer"
+                pointer.position = currentPositionOfCamera
+                self.sceneView.scene.rootNode.enumerateChildNodes { (node, _) in
+                    if node.name == "pointer" {
+                        node.removeFromParentNode()
+                    }
+                }
+                self.sceneView.scene.rootNode.addChildNode(pointer)
+                pointer.geometry?.firstMaterial?.diffuse.contents = UIColor.red
+            }
+        }
     }
 }
 
