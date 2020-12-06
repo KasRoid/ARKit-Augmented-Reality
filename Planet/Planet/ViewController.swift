@@ -10,9 +10,14 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    // MARK: - Properties
     let sceneView = ARSCNView()
     let configuration = ARWorldTrackingConfiguration()
+    var sun: SCNNode?
+    var venus: SCNNode?
+    var earth: SCNNode?
     
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupAR()
@@ -21,19 +26,68 @@ class ViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        let earth = SCNNode()
-        earth.geometry = SCNSphere(radius: 0.2)
-        earth.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "Earth-Day")
-        earth.geometry?.firstMaterial?.specular.contents = UIImage(named: "Earth-Specular")
-        earth.geometry?.firstMaterial?.emission.contents = UIImage(named: "Earth-Emission")
-        earth.geometry?.firstMaterial?.normal.contents = UIImage(named: "Earth-Normal")
-//        earth.geometry?.firstMaterial?.normal.contents = UIColor.red
-        earth.position = SCNVector3(0, 0, -1)
-        self.sceneView.scene.rootNode.addChildNode(earth)
+        setSun()
+        setVenus()
+        setEarth()
+    }
+    
+    // MARK: - Helpers
+    func setSun() {
+        sun = planet(
+            geometry: SCNSphere(radius: 0.35),
+            diffuse: UIImage(named: "Sun"),
+            specular: nil,
+            emission: nil,
+            normal: nil,
+            position: SCNVector3(0, 0, -1))
+        guard let sun = sun else { return }
+        self.sceneView.scene.rootNode.addChildNode(sun)
+    }
+    
+    func setVenus() {
+        venus = planet(
+            geometry: SCNSphere(radius: 0.1),
+            diffuse: UIImage(named: "Venus-Surface"),
+            specular: nil,
+            emission: UIImage(named: "Venus-Atmosphere"),
+            normal: nil,
+            position: SCNVector3(0.7, 0, 0))
+        
+        guard let venus = venus else { return }
+        sun?.addChildNode(venus)
+    }
+    
+    func setEarth() {
+        earth = planet(
+            geometry: SCNSphere(radius: 0.2),
+            diffuse: UIImage(named: "Earth-Day"),
+            specular: UIImage(named: "Earth-Specular"),
+            emission: UIImage(named: "Earth-Emission"),
+            normal: UIImage(named: "Earth-Normal"),
+            position: SCNVector3(1.2, 0, 0))
+        
+        guard let earth = earth else { return }
+        sun?.addChildNode(earth)
         
         let action = SCNAction.rotateBy(x: 0, y: CGFloat(360.degreesToRadians), z: 0, duration: 8)
         let forever = SCNAction.repeatForever(action)
         earth.runAction(forever)
+    }
+    
+    func planet(geometry: SCNGeometry,
+                diffuse: UIImage?,
+                specular: UIImage?,
+                emission: UIImage?,
+                normal: UIImage?,
+                position: SCNVector3) -> SCNNode {
+        let node = SCNNode()
+        node.geometry = SCNSphere(radius: 0.2)
+        node.geometry?.firstMaterial?.diffuse.contents = diffuse
+        node.geometry?.firstMaterial?.specular.contents = specular
+        node.geometry?.firstMaterial?.emission.contents = emission
+        node.geometry?.firstMaterial?.normal.contents = normal
+        node.position = position
+        return node
     }
 }
 
