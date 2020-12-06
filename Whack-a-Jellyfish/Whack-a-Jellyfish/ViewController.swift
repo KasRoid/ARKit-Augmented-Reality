@@ -32,6 +32,17 @@ extension ViewController {
         jellyfishNode?.position = SCNVector3(0, 0, -1)
         sceneView.scene.rootNode.addChildNode(jellyfishNode!)
     }
+    
+    func animateNode(node: SCNNode) {
+        let spin = CABasicAnimation(keyPath: "position")
+        spin.fromValue = node.presentation.position
+        let position = node.presentation.position
+        spin.toValue = SCNVector3(position.x - 0.2, position.y - 0.2, position.z - 0.02)
+        spin.duration = 0.07
+        spin.autoreverses = true
+        spin.repeatCount = 5
+        node.addAnimation(spin, forKey: "position")
+    }
 }
 
 // MARK: - Selectors
@@ -41,8 +52,9 @@ extension ViewController {
         switch sender {
         case playButton:
             addNode()
+            playButton.isEnabled = false
         case resetButton:
-            break
+            playButton.isEnabled = true
         default:
             break
         }
@@ -57,8 +69,10 @@ extension ViewController {
             print("Didn't touch anything")
         } else {
             let result = hitTest.first!
-            let geometry = result.node.geometry
-            print(geometry!)
+            let node = result.node
+            if node.animationKeys.isEmpty {
+                animateNode(node: node)
+            }
         }
     }
 }
