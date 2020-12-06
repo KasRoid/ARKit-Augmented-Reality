@@ -55,7 +55,7 @@ extension ViewController {
     }
     /// 사용자 승리
     func win() {
-        timer.stop()
+        restoreTimer()
         timerLabel.text = "You Win"
         self.playButton.isEnabled = true
     }
@@ -65,6 +65,7 @@ extension ViewController {
 extension ViewController {
     /// 타이머 시작
     func setTimer() {
+        self.timerLabel.text = String(self.countdown)
         timer.perform { () -> NextStep in
             self.countdown -= 1
             self.timerLabel.text = String(self.countdown)
@@ -95,6 +96,7 @@ extension ViewController {
             playButton.isEnabled = false
         case resetButton:
             restoreTimer()
+            timerLabel.text = "Let's Play"
             playButton.isEnabled = true
             sceneView.scene.rootNode.enumerateChildNodes { (node, _) in
                 node.removeFromParentNode()
