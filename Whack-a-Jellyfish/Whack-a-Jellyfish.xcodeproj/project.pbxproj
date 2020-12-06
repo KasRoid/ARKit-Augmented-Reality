@@ -13,6 +13,8 @@
 		425F9008257CB95800C15C21 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 425F9006257CB95800C15C21 /* Main.storyboard */; };
 		425F900A257CB95900C15C21 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 425F9009257CB95900C15C21 /* Assets.xcassets */; };
 		425F900D257CB95900C15C21 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 425F900B257CB95900C15C21 /* LaunchScreen.storyboard */; };
+		4294AE96257CD6BE0056868F /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 4294AE95257CD6BE0056868F /* art.scnassets */; };
+		4294AE99257CD8400056868F /* Jellyfish-Texture.png in Resources */ = {isa = PBXBuildFile; fileRef = 4294AE98257CD8400056868F /* Jellyfish-Texture.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +26,8 @@
 		425F9009257CB95900C15C21 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		425F900C257CB95900C15C21 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		425F900E257CB95900C15C21 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4294AE95257CD6BE0056868F /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
+		4294AE98257CD8400056868F /* Jellyfish-Texture.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Jellyfish-Texture.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,11 +60,13 @@
 		425F8FFF257CB95800C15C21 /* Whack-a-Jellyfish */ = {
 			isa = PBXGroup;
 			children = (
+				4294AE98257CD8400056868F /* Jellyfish-Texture.png */,
 				425F9000257CB95800C15C21 /* AppDelegate.swift */,
 				425F9002257CB95800C15C21 /* SceneDelegate.swift */,
 				425F9004257CB95800C15C21 /* ViewController.swift */,
 				425F9006257CB95800C15C21 /* Main.storyboard */,
 				425F9009257CB95900C15C21 /* Assets.xcassets */,
+				4294AE95257CD6BE0056868F /* art.scnassets */,
 				425F900B257CB95900C15C21 /* LaunchScreen.storyboard */,
 				425F900E257CB95900C15C21 /* Info.plist */,
 			);
@@ -125,8 +131,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				425F900D257CB95900C15C21 /* LaunchScreen.storyboard in Resources */,
+				4294AE96257CD6BE0056868F /* art.scnassets in Resources */,
 				425F900A257CB95900C15C21 /* Assets.xcassets in Resources */,
 				425F9008257CB95800C15C21 /* Main.storyboard in Resources */,
+				4294AE99257CD8400056868F /* Jellyfish-Texture.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

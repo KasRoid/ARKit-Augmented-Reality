@@ -27,9 +27,10 @@ class ViewController: UIViewController {
 // MARK: - Helpers
 extension ViewController {
     func addNode() {
-        let node = SCNNode(geometry: SCNBox(width: 0.1, height: 0.1, length: 0.1, chamferRadius: 0))
-        node.position = SCNVector3(0, 0, -0.2)
-        sceneView.scene.rootNode.addChildNode(node)
+        let jellyfishScene = SCNScene(named: "art.scnassets/Jellyfish.scn")
+        let jellyfishNode = jellyfishScene?.rootNode.childNode(withName: "Jellyfish", recursively: false)
+        jellyfishNode?.position = SCNVector3(0, 0, -1)
+        sceneView.scene.rootNode.addChildNode(jellyfishNode!)
     }
 }
 
@@ -57,7 +58,7 @@ extension ViewController {
         } else {
             let result = hitTest.first!
             let geometry = result.node.geometry
-            print(geometry)
+            print(geometry!)
         }
     }
 }
