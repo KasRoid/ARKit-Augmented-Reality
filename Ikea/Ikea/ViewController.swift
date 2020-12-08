@@ -12,6 +12,7 @@ class ViewController: UIViewController {
 
     // MARK: - Properties
     let itemsArray = ["cup", "vase", "boxing", "table"]
+    var selectedItem: String?
     let flowLayout = UICollectionViewFlowLayout()
     lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
     let sceneView = ARSCNView()
@@ -23,13 +24,54 @@ class ViewController: UIViewController {
         setupCollectionView()
         setupAR()
         setupUI()
+        registerGestureRecognizer()
+    }
+}
+
+// MARK: - Helpers
+extension ViewController {
+    func registerGestureRecognizer() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapped(_:)))
+        sceneView.addGestureRecognizer(tapGesture)
+    }
+    
+    func addItem(hitTestResult: ARHitTestResult) {
+        if let selectedItem = selectedItem {
+            print(selectedItem)
+            let scene = SCNScene(named: "Models.scnassets/\(selectedItem).scn")
+            let node = scene?.rootNode.childNode(withName: selectedItem, recursively: false) ?? SCNNode()
+            let transform = hitTestResult.worldTransform
+            let thirdColumn = transform.columns.3
+            node.position = SCNVector3(thirdColumn.x, thirdColumn.y, thirdColumn.z)
+            sceneView.scene.rootNode.addChildNode(node)
+        } else {
+            
+        }
+    }
+}
+
+// MARK: - Selectors
+extension ViewController {
+    @objc
+    private func tapped(_ sender: UITapGestureRecognizer) {
+        guard let sceneView = sender.view as? ARSCNView else { return }
+        let location = sender.location(in: sceneView)
+        let hitTest = sceneView.hitTest(location, types: .existingPlaneUsingExtent)
+        if !hitTest.isEmpty {
+            self.addItem(hitTestResult: hitTest.first!)
+        }
+    }
+}
+
+extension ViewController: ARSCNViewDelegate {
+    func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
     }
 }
 
 // MARK: - UICollectionViewDelegate
 extension ViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print(indexPath)
+        self.selectedItem = itemsArray[indexPath.item]
     }
 }
 
@@ -61,6 +103,7 @@ extension ViewController {
     }
     
     private func setupAR() {
+        configuration.planeDetection = .horizontal
         sceneView.session.run(configuration)
     }
     

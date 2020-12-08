@@ -14,6 +14,7 @@
 		42306469257FB2DB004A177A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 42306468257FB2DB004A177A /* Assets.xcassets */; };
 		4230646C257FB2DB004A177A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4230646A257FB2DB004A177A /* LaunchScreen.storyboard */; };
 		42306475257FB7CA004A177A /* ItemCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42306474257FB7CA004A177A /* ItemCollectionViewCell.swift */; };
+		42306478257FBD9B004A177A /* Models.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 42306477257FBD9B004A177A /* Models.scnassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		4230646B257FB2DB004A177A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4230646D257FB2DB004A177A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		42306474257FB7CA004A177A /* ItemCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemCollectionViewCell.swift; sourceTree = "<group>"; };
+		42306477257FBD9B004A177A /* Models.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = Models.scnassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +66,7 @@
 				42306474257FB7CA004A177A /* ItemCollectionViewCell.swift */,
 				42306465257FB2DA004A177A /* Main.storyboard */,
 				42306468257FB2DB004A177A /* Assets.xcassets */,
+				42306477257FBD9B004A177A /* Models.scnassets */,
 				4230646A257FB2DB004A177A /* LaunchScreen.storyboard */,
 				4230646D257FB2DB004A177A /* Info.plist */,
 			);
@@ -128,6 +131,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4230646C257FB2DB004A177A /* LaunchScreen.storyboard in Resources */,
+				42306478257FBD9B004A177A /* Models.scnassets in Resources */,
 				42306469257FB2DB004A177A /* Assets.xcassets in Resources */,
 				42306467257FB2DA004A177A /* Main.storyboard in Resources */,
 			);
