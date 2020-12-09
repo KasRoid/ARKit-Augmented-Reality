@@ -33,6 +33,8 @@ extension ViewController {
     func registerGestureRecognizer() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapped(_:)))
         sceneView.addGestureRecognizer(tapGesture)
+        let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(pinch(_:)))
+        sceneView.addGestureRecognizer(pinchGesture)
     }
     
     func addItem(raycastResult: ARRaycastResult) {
@@ -76,6 +78,19 @@ extension ViewController {
         if let raycast = raycast {
             let raycastResult = sceneView.session.raycast(raycast)
             self.addItem(raycastResult: raycastResult.first!)
+        }
+    }
+    
+    @objc
+    func pinch(_ sender: UIPinchGestureRecognizer) {
+        guard let sceneView = sender.view as? ARSCNView else { return }
+        let location = sender.location(in: sceneView)
+        let hitTest = sceneView.hitTest(location)
+        if !hitTest.isEmpty {
+            let results = hitTest.first!
+            let node = results.node
+            let pinchAction = SCNAction.scale(by: sender.scale, duration: 0)
+            node.runAction(pinchAction)
         }
     }
 }
