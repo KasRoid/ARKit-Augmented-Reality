@@ -35,19 +35,29 @@ extension ViewController {
         sceneView.addGestureRecognizer(tapGesture)
     }
     
-    func addItem(hitTestResult: ARHitTestResult) {
+    func addItem(raycastResult: ARRaycastResult) {
         if let selectedItem = selectedItem {
             print(selectedItem)
             let scene = SCNScene(named: "Models.scnassets/\(selectedItem).scn")
             let node = scene?.rootNode.childNode(withName: selectedItem, recursively: false) ?? SCNNode()
-            let transform = hitTestResult.worldTransform
+            let transform = raycastResult.worldTransform
             let thirdColumn = transform.columns.3
             node.position = SCNVector3(thirdColumn.x, thirdColumn.y, thirdColumn.z)
             sceneView.scene.rootNode.addChildNode(node)
-        } else {
-            
         }
     }
+    
+//    func addItem(hitTestResult: ARHitTestResult) {
+//        if let selectedItem = selectedItem {
+//            print(selectedItem)
+//            let scene = SCNScene(named: "Models.scnassets/\(selectedItem).scn")
+//            let node = scene?.rootNode.childNode(withName: selectedItem, recursively: false) ?? SCNNode()
+//            let transform = hitTestResult.worldTransform
+//            let thirdColumn = transform.columns.3
+//            node.position = SCNVector3(thirdColumn.x, thirdColumn.y, thirdColumn.z)
+//            sceneView.scene.rootNode.addChildNode(node)
+//        }
+//    }
 }
 
 // MARK: - Selectors
@@ -56,9 +66,16 @@ extension ViewController {
     private func tapped(_ sender: UITapGestureRecognizer) {
         guard let sceneView = sender.view as? ARSCNView else { return }
         let location = sender.location(in: sceneView)
-        let hitTest = sceneView.hitTest(location, types: .existingPlaneUsingExtent)
-        if !hitTest.isEmpty {
-            self.addItem(hitTestResult: hitTest.first!)
+//        let hitTest = sceneView.hitTest(location, types: .existingPlaneUsingExtent)
+//        if !hitTest.isEmpty {
+//            self.addItem(hitTestResult: hitTest.first!)
+//        } else {
+//            print("HitTest Failed")
+//        }
+        let raycast = sceneView.raycastQuery(from: location, allowing: .existingPlaneGeometry, alignment: .horizontal)
+        if let raycast = raycast {
+            let raycastResult = sceneView.session.raycast(raycast)
+            self.addItem(raycastResult: raycastResult.first!)
         }
     }
 }
