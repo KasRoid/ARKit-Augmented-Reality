@@ -7,6 +7,7 @@
 
 import ARKit
 import UIKit
+import CoreMotion
 
 class ViewController: UIViewController {
 
@@ -14,10 +15,13 @@ class ViewController: UIViewController {
     let sceneView = ARSCNView()
     let configuration = ARWorldTrackingConfiguration()
     let addButton = UIButton(type: .system)
+    let motionManager = CMMotionManager()
+    var vehicle: SCNPhysicsVehicle?
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupAccelerometer()
         setupAR()
         setupUI()
     }
@@ -32,8 +36,8 @@ extension ViewController {
     func createConcrete(planeAnchor: ARPlaneAnchor) -> SCNNode {
         let concreteNode = SCNNode(geometry: SCNPlane(width: CGFloat(planeAnchor.extent.x),
                                                       height: CGFloat(planeAnchor.extent.z)))
-        concreteNode.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "concrete")
-        concreteNode.geometry?.firstMaterial?.isDoubleSided = true
+//        concreteNode.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "concrete")
+//        concreteNode.geometry?.firstMaterial?.isDoubleSided = true
         concreteNode.position = SCNVector3(planeAnchor.center.x, planeAnchor.center.y, planeAnchor.center.z)
         concreteNode.eulerAngles = SCNVector3(90.degreesToRadians, 0, 0)
         let staticBody = SCNPhysicsBody.static()
@@ -48,85 +52,119 @@ extension ViewController {
         let location = SCNVector3(transform.m41, transform.m42, transform.m43)
         let currentPositionOfCamera = orientation + location
         
-        let frame = SCNNode(geometry: SCNBox(width: 0.2, height: 0.1, length: 0.4, chamferRadius: 0))
-        frame.position = currentPositionOfCamera
-        let body = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(node: frame,
+        let chassis = SCNNode(geometry: SCNBox(width: Standard.chassisWidth, height: Standard.chassisHeight, length: Standard.chassisLength, chamferRadius: 0))
+        createCarNode(chassis: chassis, position: currentPositionOfCamera)
+        addVehicleBehavior(chassis: chassis)
+        sceneView.scene.rootNode.addChildNode(chassis)
+    }
+}
+
+// MARK: - Node Related
+extension ViewController {
+    private func createCarNode(chassis: SCNNode, position: SCNVector3) {
+        chassis.position = position
+        chassis.eulerAngles = SCNVector3(0, 0, 180.degreesToRadians)
+        chassis.geometry?.firstMaterial?.diffuse.contents = UIColor.blue
+        chassis.geometry?.firstMaterial?.isDoubleSided = true
+        chassis.opacity = 0.95
+        let body = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(node: chassis,
                                                                          options: [SCNPhysicsShape.Option.keepAsCompound: true]))
-        frame.physicsBody = body
-        createCarNode(frame: frame)
-        sceneView.scene.rootNode.addChildNode(frame)
-    }
-    
-    @discardableResult
-    private func createCarNode(frame origin: SCNNode) -> SCNNode {
-        let body = createBodyNode(origin: origin)
-        createHeadNode(origin: origin, body: body)
+        chassis.physicsBody = body
+        createHeadNode(chassis: chassis)
         for index in 0...3 {
-            createWheelNode(origin: origin, body: body, index: index)
+            createWheelNode(chassis: chassis, index: index)
         }
-        return origin
     }
     
-    private func createBodyNode(origin: SCNNode) -> SCNNode {
-        let bodyWidth: CGFloat = 0.2
-        let bodyHeight: CGFloat = 0.1
-        let bodyLength: CGFloat = 0.4
-        let body = SCNNode(geometry: SCNBox(width: bodyWidth, height: bodyHeight, length: bodyLength, chamferRadius: 0))
-        body.geometry?.firstMaterial?.diffuse.contents = UIColor.blue
-        origin.addChildNode(body)
-        return body
-    }
-    
-    @discardableResult
-    private func createHeadNode(origin: SCNNode, body: SCNNode) -> SCNNode {
+    private func createHeadNode(chassis: SCNNode) {
         let headHeight: CGFloat = 0.1
         let headLength: CGFloat = 0.1
         let head = SCNNode(geometry: SCNBox(width: 0.1, height: headHeight, length: headLength, chamferRadius: 0))
-        let bodyHeight = CGFloat(body.boundingBox.max.y - body.boundingBox.min.y)
-        let bodyLength = CGFloat(body.boundingBox.max.z - body.boundingBox.min.z)
         head.geometry?.firstMaterial?.diffuse.contents = UIColor.red
+        head.geometry?.firstMaterial?.isDoubleSided = true
         head.position = SCNVector3(0,
-                                   bodyHeight / 2 + headHeight / 2,
-                                   bodyLength / 2 - headLength / 2)
-        origin.addChildNode(head)
-        return body
+                                   -Standard.chassisHeight / 2 - headHeight / 2,
+                                   Standard.chassisLength / 2 - headLength / 2)
+        chassis.addChildNode(head)
     }
     
-    @discardableResult
-    private func createWheelNode(origin: SCNNode, body: SCNNode, index: Int) -> SCNNode {
+    private func createWheelNode(chassis: SCNNode, index: Int) {
         let wheelRadius: CGFloat = 0.025
-        let wheelHeight: CGFloat = 0.025
+        let wheelHeight: CGFloat = 0.035
         let wheel = SCNNode(geometry: SCNCylinder(radius: wheelRadius, height: wheelHeight))
+        let wheelParent = SCNNode()
+        wheelParent.eulerAngles = SCNVector3(180.degreesToRadians, 0, 0)
         wheel.geometry?.firstMaterial?.diffuse.contents = UIColor.black
+        wheel.geometry?.firstMaterial?.isDoubleSided = true
         wheel.eulerAngles = SCNVector3(0, 0, 90.degreesToRadians)
-        let bodyWidth = CGFloat(body.boundingBox.max.x - body.boundingBox.min.x)
-        let bodyHeight = CGFloat(body.boundingBox.max.y - body.boundingBox.min.y)
-        let bodyLength = CGFloat(body.boundingBox.max.z - body.boundingBox.min.z)
-        
         var position = SCNVector3()
         switch index {
-        case 0: // 우측 앞바퀴
-            position = SCNVector3(bodyWidth / 2 - wheelHeight / 2,
-                                  -bodyHeight / 2 - wheelRadius,
-                                  bodyLength / 2 - wheelRadius)
-        case 1: // 좌측 앞바퀴
-            position = SCNVector3(-bodyWidth / 2 + wheelHeight / 2,
-                                  -bodyHeight / 2 - wheelRadius,
-                                  bodyLength / 2 - wheelRadius)
-        case 2: // 우측 뒷바퀴
-            position = SCNVector3(bodyWidth / 2 - wheelHeight / 2,
-                                  -bodyHeight / 2 - wheelRadius,
-                                  -bodyLength / 2 + wheelRadius)
-        case 3: // 좌측 뒷바퀴
-            position = SCNVector3(-bodyWidth / 2 + wheelHeight / 2,
-                                  -bodyHeight / 2 - wheelRadius,
-                                  -bodyLength / 2 + wheelRadius)
+        case 0: // 우측 뒷바퀴
+            wheelParent.name = "rearRightWheelParent"
+            position = SCNVector3(Standard.chassisWidth / 2 - wheelHeight / 2 - 0.02,
+                                  Standard.chassisHeight / 2 + wheelRadius + 0.02,
+                                  -Standard.chassisLength / 2 + wheelRadius + 0.02)
+        case 1: // 좌측 뒷바퀴
+            wheelParent.name = "rearLeftWheelParent"
+            position = SCNVector3(-Standard.chassisWidth / 2 + wheelHeight / 2 + 0.02,
+                                  Standard.chassisHeight / 2 + wheelRadius + 0.02,
+                                  -Standard.chassisLength / 2 + wheelRadius + 0.02)
+        case 2: // 우측 앞바퀴
+            wheelParent.name = "frontRightWheelParent"
+            position = SCNVector3(Standard.chassisWidth / 2 - wheelHeight / 2 - 0.02,
+                                  Standard.chassisHeight / 2 + wheelRadius + 0.02,
+                                  Standard.chassisLength / 2 - wheelRadius - 0.02)
+        case 3: // 좌측 앞바퀴
+            wheelParent.name = "frontLeftWheelParent"
+            position = SCNVector3(-Standard.chassisWidth / 2 + wheelHeight / 2 + 0.02,
+                                  Standard.chassisHeight / 2 + wheelRadius + 0.02,
+                                  Standard.chassisLength / 2 - wheelRadius - 0.02)
         default:
             fatalError()
         }
-        wheel.position = position
-        origin.addChildNode(wheel)
-        return wheel
+        wheelParent.position = position
+        wheelParent.addChildNode(wheel)
+        chassis.addChildNode(wheelParent)
+    }
+    
+    private func addVehicleBehavior(chassis: SCNNode) {
+        let rearRightWheelNode = chassis.childNode(withName: "rearRightWheelParent", recursively: false)!
+        let rearLeftWheelNode = chassis.childNode(withName: "rearLeftWheelParent", recursively: false)!
+        let frontRightWheelNode = chassis.childNode(withName: "frontRightWheelParent", recursively: false)!
+        let frontLeftWheelNode = chassis.childNode(withName: "frontLeftWheelParent", recursively: false)!
+        
+        let rearRightWheel = SCNPhysicsVehicleWheel(node: rearRightWheelNode)
+        let rearLeftWheel = SCNPhysicsVehicleWheel(node: rearLeftWheelNode)
+        let frontRightWheel = SCNPhysicsVehicleWheel(node: frontRightWheelNode)
+        let frontLeftWheel = SCNPhysicsVehicleWheel(node: frontLeftWheelNode)
+        vehicle = SCNPhysicsVehicle(chassisBody: chassis.physicsBody ?? SCNPhysicsBody(),
+                                         wheels: [rearRightWheel,
+                                                  rearLeftWheel,
+                                                  frontRightWheel,
+                                                  frontLeftWheel])
+        guard let vehicle = vehicle else { return }
+        sceneView.scene.physicsWorld.addBehavior(vehicle)
+    }
+}
+
+// MARK: - Accelerometer Related
+extension ViewController {
+    func setupAccelerometer() {
+        guard motionManager.isAccelerometerAvailable else { return }
+        motionManager.startAccelerometerUpdates(to: .main,
+                                                withHandler: { data, error in
+                                                    if let error = error {
+                                                        print(error.localizedDescription)
+                                                        return
+                                                    }
+                                                    guard let data = data else { return }
+                                                    self.accelerometerDidChange(acceleration: data.acceleration)
+                                                })
+    }
+    
+    func accelerometerDidChange(acceleration: CMAcceleration) {
+//        print(acceleration.x)
+//        print(acceleration.y)
     }
 }
 
@@ -162,6 +200,14 @@ extension ViewController {
     @objc
     private func handleButton(_ sender: UIButton) {
         addCar()
+    }
+}
+
+extension ViewController {
+    struct Standard {
+        static let chassisWidth: CGFloat = 0.2
+        static let chassisHeight: CGFloat = 0.1
+        static let chassisLength: CGFloat = 0.4
     }
 }
 
