@@ -37,7 +37,7 @@ extension ViewController {
         concreteNode.position = SCNVector3(planeAnchor.center.x, planeAnchor.center.y, planeAnchor.center.z)
         concreteNode.eulerAngles = SCNVector3(90.degreesToRadians, 0, 0)
         let staticBody = SCNPhysicsBody.static()
-        concreteNode.physicsBody = staticBody   
+        concreteNode.physicsBody = staticBody
         return concreteNode
     }
     
@@ -47,14 +47,86 @@ extension ViewController {
         let orientation = SCNVector3(-transform.m31, -transform.m32, -transform.m33)
         let location = SCNVector3(transform.m41, transform.m42, transform.m43)
         let currentPositionOfCamera = orientation + location
-        let box = SCNNode(geometry: SCNBox(width: 0.1, height: 0.1, length: 0.1, chamferRadius: 0))
-        box.geometry?.firstMaterial?.diffuse.contents = UIColor.blue
-        box.position = currentPositionOfCamera
-        let body = SCNPhysicsBody(type: .dynamic,
-                                  shape: SCNPhysicsShape(node: box,
-                                                         options: [SCNPhysicsShape.Option.keepAsCompound: true]))
-        box.physicsBody = body
-        sceneView.scene.rootNode.addChildNode(box)
+        
+        let frame = SCNNode(geometry: SCNBox(width: 0.2, height: 0.1, length: 0.4, chamferRadius: 0))
+        frame.position = currentPositionOfCamera
+        let body = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(node: frame,
+                                                                         options: [SCNPhysicsShape.Option.keepAsCompound: true]))
+        frame.physicsBody = body
+        createCarNode(frame: frame)
+        sceneView.scene.rootNode.addChildNode(frame)
+    }
+    
+    @discardableResult
+    private func createCarNode(frame origin: SCNNode) -> SCNNode {
+        let body = createBodyNode(origin: origin)
+        createHeadNode(origin: origin, body: body)
+        for index in 0...3 {
+            createWheelNode(origin: origin, body: body, index: index)
+        }
+        return origin
+    }
+    
+    private func createBodyNode(origin: SCNNode) -> SCNNode {
+        let bodyWidth: CGFloat = 0.2
+        let bodyHeight: CGFloat = 0.1
+        let bodyLength: CGFloat = 0.4
+        let body = SCNNode(geometry: SCNBox(width: bodyWidth, height: bodyHeight, length: bodyLength, chamferRadius: 0))
+        body.geometry?.firstMaterial?.diffuse.contents = UIColor.blue
+        origin.addChildNode(body)
+        return body
+    }
+    
+    @discardableResult
+    private func createHeadNode(origin: SCNNode, body: SCNNode) -> SCNNode {
+        let headHeight: CGFloat = 0.1
+        let headLength: CGFloat = 0.1
+        let head = SCNNode(geometry: SCNBox(width: 0.1, height: headHeight, length: headLength, chamferRadius: 0))
+        let bodyHeight = CGFloat(body.boundingBox.max.y - body.boundingBox.min.y)
+        let bodyLength = CGFloat(body.boundingBox.max.z - body.boundingBox.min.z)
+        head.geometry?.firstMaterial?.diffuse.contents = UIColor.red
+        head.position = SCNVector3(0,
+                                   bodyHeight / 2 + headHeight / 2,
+                                   bodyLength / 2 - headLength / 2)
+        origin.addChildNode(head)
+        return body
+    }
+    
+    @discardableResult
+    private func createWheelNode(origin: SCNNode, body: SCNNode, index: Int) -> SCNNode {
+        let wheelRadius: CGFloat = 0.025
+        let wheelHeight: CGFloat = 0.025
+        let wheel = SCNNode(geometry: SCNCylinder(radius: wheelRadius, height: wheelHeight))
+        wheel.geometry?.firstMaterial?.diffuse.contents = UIColor.black
+        wheel.eulerAngles = SCNVector3(0, 0, 90.degreesToRadians)
+        let bodyWidth = CGFloat(body.boundingBox.max.x - body.boundingBox.min.x)
+        let bodyHeight = CGFloat(body.boundingBox.max.y - body.boundingBox.min.y)
+        let bodyLength = CGFloat(body.boundingBox.max.z - body.boundingBox.min.z)
+        
+        var position = SCNVector3()
+        switch index {
+        case 0: // 우측 앞바퀴
+            position = SCNVector3(bodyWidth / 2 - wheelHeight / 2,
+                                  -bodyHeight / 2 - wheelRadius,
+                                  bodyLength / 2 - wheelRadius)
+        case 1: // 좌측 앞바퀴
+            position = SCNVector3(-bodyWidth / 2 + wheelHeight / 2,
+                                  -bodyHeight / 2 - wheelRadius,
+                                  bodyLength / 2 - wheelRadius)
+        case 2: // 우측 뒷바퀴
+            position = SCNVector3(bodyWidth / 2 - wheelHeight / 2,
+                                  -bodyHeight / 2 - wheelRadius,
+                                  -bodyLength / 2 + wheelRadius)
+        case 3: // 좌측 뒷바퀴
+            position = SCNVector3(-bodyWidth / 2 + wheelHeight / 2,
+                                  -bodyHeight / 2 - wheelRadius,
+                                  -bodyLength / 2 + wheelRadius)
+        default:
+            fatalError()
+        }
+        wheel.position = position
+        origin.addChildNode(wheel)
+        return wheel
     }
 }
 
@@ -64,7 +136,7 @@ extension ViewController: ARSCNViewDelegate {
         guard let planeAhnchor = anchor as? ARPlaneAnchor else { return }
         let concreteNode = createConcrete(planeAnchor: planeAhnchor)
         node.addChildNode(concreteNode)
-        print("new flat surface dtectd, new ARPlaneAnchor added")
+        print("new flat surface detectd, new ARPlaneAnchor added")
     }
     
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
@@ -96,8 +168,9 @@ extension ViewController {
 // MARK: - UI
 extension ViewController {
     func setupAR() {
-        sceneView.delegate = self
         configuration.planeDetection = .horizontal
+        sceneView.autoenablesDefaultLighting = true
+        sceneView.delegate = self
         sceneView.session.run(configuration)
     }
     
