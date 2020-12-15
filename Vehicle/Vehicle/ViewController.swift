@@ -17,6 +17,9 @@ class ViewController: UIViewController {
     let addButton = UIButton(type: .system)
     let motionManager = CMMotionManager()
     var vehicle: SCNPhysicsVehicle?
+    var orientation: CGFloat = 0
+    var touched = false
+    
     var isCodeBase = true
 
     // MARK: - Lifecycle
@@ -27,8 +30,14 @@ class ViewController: UIViewController {
         setupUI()
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        self.touched = true
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+        self.touched = false
     }
 }
 
@@ -69,7 +78,7 @@ extension ViewController {
 extension ViewController {
     private func createCarNode(chassis: SCNNode, position: SCNVector3) {
         chassis.position = position
-        chassis.eulerAngles = SCNVector3(0, 0, 180.degreesToRadians)
+        chassis.eulerAngles = SCNVector3(0, 180.degreesToRadians, 180.degreesToRadians)
         chassis.geometry?.firstMaterial?.diffuse.contents = UIColor.blue
         chassis.geometry?.firstMaterial?.isDoubleSided = true
         chassis.opacity = 0.95
@@ -192,8 +201,11 @@ extension ViewController {
     }
     
     func accelerometerDidChange(acceleration: CMAcceleration) {
-//        print(acceleration.x)
-//        print(acceleration.y)
+        if acceleration.x > 0 {
+            self.orientation = CGFloat(acceleration.y)
+        } else {
+            self.orientation = -CGFloat(acceleration.y)
+        }
     }
 }
 
@@ -203,7 +215,7 @@ extension ViewController: ARSCNViewDelegate {
         guard let planeAhnchor = anchor as? ARPlaneAnchor else { return }
         let concreteNode = createConcrete(planeAnchor: planeAhnchor)
         node.addChildNode(concreteNode)
-        print("new flat surface detectd, new ARPlaneAnchor added")
+//        print("new flat surface detectd, new ARPlaneAnchor added")
     }
     
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
@@ -213,7 +225,7 @@ extension ViewController: ARSCNViewDelegate {
         }
         let concreteNode = createConcrete(planeAnchor: planeAhnchor)
         node.addChildNode(concreteNode)
-        print("Updating floor's anchor")
+//        print("Updating floor's anchor")
     }
     
     func renderer(_ renderer: SCNSceneRenderer, didRemove node: SCNNode, for anchor: ARAnchor) {
@@ -221,6 +233,19 @@ extension ViewController: ARSCNViewDelegate {
         node.enumerateChildNodes { (childeNode, _) in
             childeNode.removeFromParentNode()
         }
+    }
+    
+    func renderer(_ renderer: SCNSceneRenderer, didSimulatePhysicsAtTime time: TimeInterval) {
+        vehicle?.setSteeringAngle(orientation, forWheelAt: 2)
+        vehicle?.setSteeringAngle(orientation, forWheelAt: 3)
+        var engineForce: CGFloat = 0
+        if touched {
+            engineForce = 5
+        } else {
+            engineForce = 0
+        }
+        vehicle?.applyEngineForce(engineForce, forWheelAt: 0)
+        vehicle?.applyEngineForce(engineForce, forWheelAt: 1)
     }
 }
 
@@ -245,6 +270,7 @@ extension ViewController {
     func setupAR() {
         configuration.planeDetection = .horizontal
         sceneView.autoenablesDefaultLighting = true
+        sceneView.showsStatistics = true
         sceneView.delegate = self
         sceneView.session.run(configuration)
     }
