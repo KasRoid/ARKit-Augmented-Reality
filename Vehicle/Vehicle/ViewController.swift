@@ -17,8 +17,8 @@ class ViewController: UIViewController {
     let addButton = UIButton(type: .system)
     let motionManager = CMMotionManager()
     var vehicle: SCNPhysicsVehicle?
-    var isCodeBase = false
-    
+    var isCodeBase = true
+
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -73,9 +73,6 @@ extension ViewController {
         chassis.geometry?.firstMaterial?.diffuse.contents = UIColor.blue
         chassis.geometry?.firstMaterial?.isDoubleSided = true
         chassis.opacity = 0.95
-        let body = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(node: chassis,
-                                                                         options: [SCNPhysicsShape.Option.keepAsCompound: true]))
-        chassis.physicsBody = body
         createHeadNode(chassis: chassis)
         for index in 0...3 {
             createWheelNode(chassis: chassis, index: index)
@@ -99,7 +96,7 @@ extension ViewController {
         let wheelHeight: CGFloat = 0.035
         let wheel = SCNNode(geometry: SCNCylinder(radius: wheelRadius, height: wheelHeight))
         let wheelParent = SCNNode()
-        wheelParent.eulerAngles = SCNVector3(180.degreesToRadians, 0, 0)
+        wheelParent.eulerAngles = SCNVector3(0, 0, 0)
         wheel.geometry?.firstMaterial?.diffuse.contents = UIColor.black
         wheel.geometry?.firstMaterial?.isDoubleSided = true
         wheel.eulerAngles = SCNVector3(0, 0, 90.degreesToRadians)
@@ -143,6 +140,10 @@ extension ViewController {
         let rearLeftWheel = SCNPhysicsVehicleWheel(node: rearLeftWheelNode)
         let frontRightWheel = SCNPhysicsVehicleWheel(node: frontRightWheelNode)
         let frontLeftWheel = SCNPhysicsVehicleWheel(node: frontLeftWheelNode)
+        
+        let body = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(node: chassis,
+                                                                         options: [SCNPhysicsShape.Option.keepAsCompound: true]))
+        chassis.physicsBody = body
         vehicle = SCNPhysicsVehicle(chassisBody: chassis.physicsBody ?? SCNPhysicsBody(),
                                          wheels: [rearRightWheel,
                                                   rearLeftWheel,
