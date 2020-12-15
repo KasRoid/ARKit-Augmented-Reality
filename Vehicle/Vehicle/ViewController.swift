@@ -17,6 +17,7 @@ class ViewController: UIViewController {
     let addButton = UIButton(type: .system)
     let motionManager = CMMotionManager()
     var vehicle: SCNPhysicsVehicle?
+    var isCodeBase = false
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -52,12 +53,17 @@ extension ViewController {
         let location = SCNVector3(transform.m41, transform.m42, transform.m43)
         let currentPositionOfCamera = orientation + location
         
+        if !isCodeBase {
+            addSceneNode(position: currentPositionOfCamera)
+            return
+        }
+        
         let chassis = SCNNode(geometry: SCNBox(width: Standard.chassisWidth, height: Standard.chassisHeight, length: Standard.chassisLength, chamferRadius: 0))
         createCarNode(chassis: chassis, position: currentPositionOfCamera)
         addVehicleBehavior(chassis: chassis)
         sceneView.scene.rootNode.addChildNode(chassis)
     }
-}
+    }
 
 // MARK: - Node Related
 extension ViewController {
@@ -144,6 +150,28 @@ extension ViewController {
                                                   frontLeftWheel])
         guard let vehicle = vehicle else { return }
         sceneView.scene.physicsWorld.addBehavior(vehicle)
+    }
+    
+    private func addSceneNode(position: SCNVector3) {
+        let scene = SCNScene(named: "Car-Scene.scn")
+        let chassis = (scene?.rootNode.childNode(withName: "chassis", recursively: false))!
+        let frontLeftWheel = chassis.childNode(withName: "frontLeftParent", recursively: false)!
+        let frontRightWheel = chassis.childNode(withName: "frontRightParent", recursively: false)!
+        let rearLeftWheel = chassis.childNode(withName: "rearLeftParent", recursively: false)!
+        let rearRightWheel = chassis.childNode(withName: "rearRightParent", recursively: false)!
+        
+        let v_frontLeftWheel = SCNPhysicsVehicleWheel(node: frontLeftWheel)
+        let v_frontRightWheel = SCNPhysicsVehicleWheel(node: frontRightWheel)
+        let v_rearRightWheel = SCNPhysicsVehicleWheel(node: rearLeftWheel)
+        let v_rearLeftWheel = SCNPhysicsVehicleWheel(node: rearRightWheel)
+
+        
+        chassis.position = position
+        let body = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(node: chassis, options: [SCNPhysicsShape.Option.keepAsCompound: true]))
+        chassis.physicsBody = body
+        self.vehicle = SCNPhysicsVehicle(chassisBody: chassis.physicsBody!, wheels: [v_rearRightWheel, v_rearLeftWheel, v_frontRightWheel, v_frontLeftWheel])
+        self.sceneView.scene.physicsWorld.addBehavior(self.vehicle!)
+        self.sceneView.scene.rootNode.addChildNode(chassis)
     }
 }
 

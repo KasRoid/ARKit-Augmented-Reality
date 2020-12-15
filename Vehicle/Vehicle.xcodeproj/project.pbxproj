@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		421664D32588DE9400DE271F /* Car-Scene.scn in Resources */ = {isa = PBXBuildFile; fileRef = 421664D22588DE9400DE271F /* Car-Scene.scn */; };
 		422444C02585ED1500FC3F5B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422444BF2585ED1500FC3F5B /* AppDelegate.swift */; };
 		422444C22585ED1500FC3F5B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422444C12585ED1500FC3F5B /* SceneDelegate.swift */; };
 		422444C42585ED1500FC3F5B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422444C32585ED1500FC3F5B /* ViewController.swift */; };
@@ -16,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		421664D22588DE9400DE271F /* Car-Scene.scn */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = "Car-Scene.scn"; sourceTree = "<group>"; };
 		422444BC2585ED1500FC3F5B /* Vehicle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Vehicle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		422444BF2585ED1500FC3F5B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		422444C12585ED1500FC3F5B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -59,6 +61,7 @@
 				422444BF2585ED1500FC3F5B /* AppDelegate.swift */,
 				422444C12585ED1500FC3F5B /* SceneDelegate.swift */,
 				422444C32585ED1500FC3F5B /* ViewController.swift */,
+				421664D22588DE9400DE271F /* Car-Scene.scn */,
 				422444C52585ED1500FC3F5B /* Main.storyboard */,
 				422444C82585ED1500FC3F5B /* Assets.xcassets */,
 				422444CA2585ED1500FC3F5B /* LaunchScreen.storyboard */,
@@ -124,6 +127,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				421664D32588DE9400DE271F /* Car-Scene.scn in Resources */,
 				422444CC2585ED1500FC3F5B /* LaunchScreen.storyboard in Resources */,
 				422444C92585ED1500FC3F5B /* Assets.xcassets in Resources */,
 				422444C72585ED1500FC3F5B /* Main.storyboard in Resources */,
