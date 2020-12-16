@@ -18,7 +18,8 @@ class ViewController: UIViewController {
     let motionManager = CMMotionManager()
     var vehicle: SCNPhysicsVehicle?
     var orientation: CGFloat = 0
-    var touched = false
+    var accelerationValues = [Double(0), Double(1)]
+    var touched = 0
     
     var isCodeBase = true
 
@@ -32,12 +33,13 @@ class ViewController: UIViewController {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
-        self.touched = true
+        guard let _ = touches.first else { return }
+        self.touched += touches.count
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
-        self.touched = false
+        self.touched = 0
     }
 }
 
@@ -201,11 +203,18 @@ extension ViewController {
     }
     
     func accelerometerDidChange(acceleration: CMAcceleration) {
-        if acceleration.x > 0 {
-            self.orientation = CGFloat(acceleration.y)
+        accelerationValues[1] = filtered(currentAcceleration: accelerationValues[1], updatedAcceleration: acceleration.y)
+        accelerationValues[0] = filtered(currentAcceleration: accelerationValues[0], updatedAcceleration: acceleration.x)
+        if accelerationValues[0] > 0 {
+            self.orientation = CGFloat(accelerationValues[1])
         } else {
-            self.orientation = -CGFloat(acceleration.y)
+            self.orientation = -CGFloat(accelerationValues[1])
         }
+    }
+    
+    func filtered(currentAcceleration: Double, updatedAcceleration: Double) -> Double {
+        let kfilteringFactor = 0.5
+        return updatedAcceleration * kfilteringFactor + currentAcceleration * (1 - kfilteringFactor)
     }
 }
 
@@ -239,13 +248,21 @@ extension ViewController: ARSCNViewDelegate {
         vehicle?.setSteeringAngle(orientation, forWheelAt: 2)
         vehicle?.setSteeringAngle(orientation, forWheelAt: 3)
         var engineForce: CGFloat = 0
-        if touched {
+        var breakingForce: CGFloat = 0
+        switch touched {
+        case 1:
             engineForce = 5
-        } else {
+        case 2:
+            engineForce = -5
+        case 3:
+            breakingForce = 100
+        default:
             engineForce = 0
         }
         vehicle?.applyEngineForce(engineForce, forWheelAt: 0)
         vehicle?.applyEngineForce(engineForce, forWheelAt: 1)
+        vehicle?.applyBrakingForce(breakingForce, forWheelAt: 0)
+        vehicle?.applyBrakingForce(breakingForce, forWheelAt: 1)
     }
 }
 
