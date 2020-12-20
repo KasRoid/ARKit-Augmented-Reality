@@ -11,16 +11,39 @@ import SnapKit
 
 class ViewController: UIViewController {
 
+    // MARK: - Properties
     private let sceneView = ARSCNView()
     private let stackView = UIStackView()
     private let button = UIButton()
     private let texts = ["Distance", "x", "y", "z"]
+    private var startingPosition: SCNNode?
     
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setBasics()
         setUI()
         setAR()
+    }
+}
+
+// MARK: - Helpers
+extension ViewController {
+    private func setLabels(x: Float, y: Float, z: Float) {
+        DispatchQueue.main.async {
+            guard let labels = self.stackView.arrangedSubviews as? [UILabel] else { return }
+            let texts = [String(format: "%.2f", self.distanceTraveled(x: x, y: y, z: z))  + "m",
+                         String(format: "%.2f", x) + "m",
+                         String(format: "%.2f", y) + "m",
+                         String(format: "%.2f", z) + "m"]
+            for index in labels.indices {
+                labels[index].text = texts[index]
+            }
+        }
+    }
+    
+    private func distanceTraveled(x: Float, y: Float, z: Float) -> Float {
+        return sqrtf(x * x + y * y + z * z)
     }
 }
 
@@ -35,6 +58,11 @@ extension ViewController {
     private func handleTap(_ sender: UITapGestureRecognizer) {
         guard let sceneView = sender.view as? ARSCNView else { return }
         guard let currentFrame = sceneView.session.currentFrame else { return }
+        if startingPosition != nil {
+            startingPosition?.removeFromParentNode()
+            startingPosition = nil
+            return
+        }
         let camera = currentFrame.camera
         let transform = camera.transform
         var translationMatrix = matrix_identity_float4x4
@@ -44,6 +72,20 @@ extension ViewController {
         node.geometry?.firstMaterial?.diffuse.contents = UIColor.yellow
         node.simdTransform = modifiedMatrix
         sceneView.scene.rootNode.addChildNode(node)
+        startingPosition = node
+    }
+}
+
+extension ViewController: ARSCNViewDelegate {
+    func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
+        guard let startingPosition = startingPosition else { return }
+        guard let pointOfView = sceneView.pointOfView else { return }
+        let transform = pointOfView.transform
+        let location = SCNVector3(transform.m41, transform.m42, transform.m43)
+        let xDistance = location.x - startingPosition.position.x
+        let yDistance = location.y - startingPosition.position.y
+        let zDistance = location.z - startingPosition.position.z
+        setLabels(x: xDistance, y: yDistance, z: zDistance)
     }
 }
 
@@ -54,7 +96,7 @@ extension ViewController {
         sceneView.addGestureRecognizer(tap)
         
         let configuration = ARWorldTrackingConfiguration()
-        sceneView.debugOptions = [.showWorldOrigin]
+        sceneView.delegate = self
         sceneView.session.run(configuration)
     }
     
