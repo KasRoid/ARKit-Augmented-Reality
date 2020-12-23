@@ -14,7 +14,7 @@
 		4213B148258F714D007F0AF4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4213B147258F714D007F0AF4 /* Assets.xcassets */; };
 		4213B14B258F714D007F0AF4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4213B149258F714D007F0AF4 /* LaunchScreen.storyboard */; };
 		4213B155258F7177007F0AF4 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4213B154258F7177007F0AF4 /* SnapKit */; };
-		42AEC3D725922EF500F2E723 /* Portal.scn in Resources */ = {isa = PBXBuildFile; fileRef = 42AEC3D625922EF500F2E723 /* Portal.scn */; };
+		429471E425937DA100210C6B /* portal.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 429471E325937DA100210C6B /* portal.scnassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,7 +26,7 @@
 		4213B147258F714D007F0AF4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4213B14A258F714D007F0AF4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4213B14C258F714D007F0AF4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		42AEC3D625922EF500F2E723 /* Portal.scn */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = Portal.scn; sourceTree = "<group>"; };
+		429471E325937DA100210C6B /* portal.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = portal.scnassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,9 +63,9 @@
 				4213B13E258F714C007F0AF4 /* AppDelegate.swift */,
 				4213B140258F714C007F0AF4 /* SceneDelegate.swift */,
 				4213B142258F714C007F0AF4 /* ViewController.swift */,
-				42AEC3D625922EF500F2E723 /* Portal.scn */,
 				4213B144258F714C007F0AF4 /* Main.storyboard */,
 				4213B147258F714D007F0AF4 /* Assets.xcassets */,
+				429471E325937DA100210C6B /* portal.scnassets */,
 				4213B149258F714D007F0AF4 /* LaunchScreen.storyboard */,
 				4213B14C258F714D007F0AF4 /* Info.plist */,
 			);
@@ -135,9 +135,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				429471E425937DA100210C6B /* portal.scnassets in Resources */,
 				4213B14B258F714D007F0AF4 /* LaunchScreen.storyboard in Resources */,
 				4213B148258F714D007F0AF4 /* Assets.xcassets in Resources */,
-				42AEC3D725922EF500F2E723 /* Portal.scn in Resources */,
 				4213B146258F714C007F0AF4 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
