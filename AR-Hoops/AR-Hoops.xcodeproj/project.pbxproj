@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		05F9C457BDEEF36A788D8E0F /* Pods_AR_Hoops.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3443966B4F8A25836857E19 /* Pods_AR_Hoops.framework */; };
 		423F769D25A14E8400C32638 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423F769C25A14E8400C32638 /* AppDelegate.swift */; };
 		423F769F25A14E8400C32638 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423F769E25A14E8400C32638 /* SceneDelegate.swift */; };
 		423F76A125A14E8400C32638 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423F76A025A14E8400C32638 /* ViewController.swift */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2FC69D6A772E396E65411794 /* Pods-AR-Hoops.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AR-Hoops.debug.xcconfig"; path = "Target Support Files/Pods-AR-Hoops/Pods-AR-Hoops.debug.xcconfig"; sourceTree = "<group>"; };
 		423F769925A14E8400C32638 /* AR-Hoops.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AR-Hoops.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		423F769C25A14E8400C32638 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		423F769E25A14E8400C32638 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -26,6 +28,8 @@
 		423F76A825A14E8800C32638 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		423F76AA25A14E8800C32638 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		42CA5BF225A154E6008955BF /* Basketball.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = Basketball.scnassets; sourceTree = "<group>"; };
+		A3443966B4F8A25836857E19 /* Pods_AR_Hoops.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AR_Hoops.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E997E9130C772FF9E102127C /* Pods-AR-Hoops.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AR-Hoops.release.xcconfig"; path = "Target Support Files/Pods-AR-Hoops/Pods-AR-Hoops.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,6 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				05F9C457BDEEF36A788D8E0F /* Pods_AR_Hoops.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -44,6 +49,8 @@
 			children = (
 				423F769B25A14E8400C32638 /* AR-Hoops */,
 				423F769A25A14E8400C32638 /* Products */,
+				65D786CA5FF9F21E88D2A270 /* Pods */,
+				9E35B361B33DE089ECC26F14 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -58,16 +65,42 @@
 		423F769B25A14E8400C32638 /* AR-Hoops */ = {
 			isa = PBXGroup;
 			children = (
-				423F769C25A14E8400C32638 /* AppDelegate.swift */,
-				423F769E25A14E8400C32638 /* SceneDelegate.swift */,
 				423F76A025A14E8400C32638 /* ViewController.swift */,
 				423F76A225A14E8400C32638 /* Main.storyboard */,
 				42CA5BF225A154E6008955BF /* Basketball.scnassets */,
-				423F76A525A14E8800C32638 /* Assets.xcassets */,
-				423F76A725A14E8800C32638 /* LaunchScreen.storyboard */,
+				426FA9A225A15DB800C693C9 /* Supports */,
 				423F76AA25A14E8800C32638 /* Info.plist */,
 			);
 			path = "AR-Hoops";
+			sourceTree = "<group>";
+		};
+		426FA9A225A15DB800C693C9 /* Supports */ = {
+			isa = PBXGroup;
+			children = (
+				423F769C25A14E8400C32638 /* AppDelegate.swift */,
+				423F769E25A14E8400C32638 /* SceneDelegate.swift */,
+				423F76A525A14E8800C32638 /* Assets.xcassets */,
+				423F76A725A14E8800C32638 /* LaunchScreen.storyboard */,
+			);
+			path = Supports;
+			sourceTree = "<group>";
+		};
+		65D786CA5FF9F21E88D2A270 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				2FC69D6A772E396E65411794 /* Pods-AR-Hoops.debug.xcconfig */,
+				E997E9130C772FF9E102127C /* Pods-AR-Hoops.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		9E35B361B33DE089ECC26F14 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A3443966B4F8A25836857E19 /* Pods_AR_Hoops.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -77,9 +110,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 423F76AD25A14E8800C32638 /* Build configuration list for PBXNativeTarget "AR-Hoops" */;
 			buildPhases = (
+				A85879A9ACA943D1FDF63231 /* [CP] Check Pods Manifest.lock */,
 				423F769525A14E8400C32638 /* Sources */,
 				423F769625A14E8400C32638 /* Frameworks */,
 				423F769725A14E8400C32638 /* Resources */,
+				B7EA722C967EB40AC72818C9 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -135,6 +170,48 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		A85879A9ACA943D1FDF63231 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-AR-Hoops-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B7EA722C967EB40AC72818C9 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AR-Hoops/Pods-AR-Hoops-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AR-Hoops/Pods-AR-Hoops-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AR-Hoops/Pods-AR-Hoops-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		423F769525A14E8400C32638 /* Sources */ = {
@@ -287,6 +364,7 @@
 		};
 		423F76AE25A14E8800C32638 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2FC69D6A772E396E65411794 /* Pods-AR-Hoops.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -306,6 +384,7 @@
 		};
 		423F76AF25A14E8800C32638 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E997E9130C772FF9E102127C /* Pods-AR-Hoops.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
