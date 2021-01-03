@@ -14,6 +14,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var sceneView: ARSCNView!
     final private let configuration = ARWorldTrackingConfiguration()
     final private var power: Float = 50
+    final private var target: SCNNode?
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -46,7 +47,11 @@ class ViewController: UIViewController {
                                                       orientation.y * power,
                                                       orientation.z * power),
                                            asImpulse: true)
+        bulletNode.physicsBody?.categoryBitMask = BitMaskCategory.bullet.rawValue
+        bulletNode.physicsBody?.contactTestBitMask = BitMaskCategory.target.rawValue
         sceneView.scene.rootNode.addChildNode(bulletNode)
+        bulletNode.runAction(SCNAction.sequence([SCNAction.wait(duration: 2.0),
+                                                 SCNAction.removeFromParentNode()]))
     }
 }
 
@@ -58,7 +63,29 @@ extension ViewController {
         eggNode.position = SCNVector3(x, y, z)
         eggNode.physicsBody = SCNPhysicsBody(type: .static,
                                              shape: SCNPhysicsShape(node: eggNode, options: nil))
+        eggNode.physicsBody?.categoryBitMask = BitMaskCategory.target.rawValue
+        eggNode.physicsBody?.contactTestBitMask = BitMaskCategory.bullet.rawValue
         sceneView.scene.rootNode.addChildNode(eggNode)
+    }
+}
+
+extension ViewController: SCNPhysicsContactDelegate {
+    func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
+        let nodeA = contact.nodeA
+        let nodeB = contact.nodeB
+        if nodeA.physicsBody?.categoryBitMask == BitMaskCategory.target.rawValue {
+            target = nodeA
+        } else if nodeB.physicsBody?.categoryBitMask == BitMaskCategory.target.rawValue {
+            target = nodeB
+        }
+        let confettiScene = SCNScene(named: "Art.scnassets/confetti.scn")!
+        let confettiNode = confettiScene.rootNode.childNode(withName: "particles", recursively: false)!
+        confettiNode.particleSystems?.first?.loops = false
+        confettiNode.particleSystems?.first?.particleLifeSpan = 4
+        confettiNode.particleSystems?.first?.emitterShape = self.target?.geometry
+        confettiNode.position = contact.contactPoint
+        self.sceneView.scene.rootNode.addChildNode(confettiNode)
+        target?.removeFromParentNode()
     }
 }
 
@@ -69,10 +96,16 @@ extension ViewController {
         sceneView.addGestureRecognizer(tapGesture)
         sceneView.autoenablesDefaultLighting = true
         sceneView.debugOptions = [.showWorldOrigin, .showFeaturePoints]
+        sceneView.scene.physicsWorld.contactDelegate = self
         sceneView.session.run(configuration)
     }
 }
 
 func +(left: SCNVector3, right: SCNVector3) -> SCNVector3 {
     return SCNVector3Make(left.x + right.x, left.y + right.x, left.z + right.z)
+}
+
+enum BitMaskCategory: Int {
+    case bullet = 0
+    case target = 1
 }
