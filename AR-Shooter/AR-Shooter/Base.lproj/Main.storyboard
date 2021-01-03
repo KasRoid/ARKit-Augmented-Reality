@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="AR_Shooter" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <arscnView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NEW-JF-Arm">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                            </arscnView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="btL-aD-IXA">
+                                <rect key="frame" x="195" y="436" width="24" height="24"/>
+                                <state key="normal" image="plus"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZAh-Ac-PbW">
+                                <rect key="frame" x="160" y="799" width="94" height="33"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                <state key="normal" title="add targets"/>
+                                <connections>
+                                    <action selector="handleButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="gFa-TB-riz"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="ZAh-Ac-PbW" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="65U-vX-Osa"/>
+                            <constraint firstItem="NEW-JF-Arm" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="IAi-fF-tNj"/>
+                            <constraint firstItem="btL-aD-IXA" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="SJh-LS-Bpg"/>
+                            <constraint firstAttribute="bottom" secondItem="NEW-JF-Arm" secondAttribute="bottom" id="T91-Mc-6Fn"/>
+                            <constraint firstAttribute="trailing" secondItem="NEW-JF-Arm" secondAttribute="trailing" id="hFR-wD-6Hx"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="ZAh-Ac-PbW" secondAttribute="bottom" constant="30" id="qh7-rP-UWk"/>
+                            <constraint firstItem="btL-aD-IXA" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="urr-mt-cBo"/>
+                            <constraint firstItem="NEW-JF-Arm" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="yTt-0u-xmu"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="sceneView" destination="NEW-JF-Arm" id="VNE-Uh-Omw"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-372" y="-183"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="plus" width="24" height="24"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>
